@@ -16,7 +16,7 @@ namespace BTactixMotionUI
         static AppServices()
         {
             // Initialize once for entire app
-            LoggerFactory = new AppLoggerFactory("D:\\Logs\\BTactixMotionUI.log");
+            LoggerFactory = new AppLoggerFactory(ConfigHelper.LogFilePath);
             ErrorHandler = new ErrorHandler();
             AppLogger = LoggerFactory.CreateLogger(typeof(App));
         }

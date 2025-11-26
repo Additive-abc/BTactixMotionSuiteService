@@ -1,36 +1,99 @@
-﻿using System.Configuration;
-using System.Data;
+﻿using BTactixMotionUI;
+using Prism.Ioc;
+using Prism.Unity; // or Prism.DryIoc depending on your container
 using System.Windows;
 
 namespace BTactixMotionUI
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
+    public partial class App : PrismApplication
     {
         public static HttpServiceClient HttpClient { get; private set; }
+        private bool isRunning;
 
-        protected override async void OnStartup(StartupEventArgs e)
+        protected override Window CreateShell()
         {
-            base.OnStartup(e);
+            return Container.Resolve<Shell>();
+        }
 
-            var serviceUrl = "http://localhost:5000"; // or read from config
-            HttpClient = new HttpServiceClient(serviceUrl);
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        {
+            containerRegistry.RegisterSingleton<HttpServiceClient>(() => HttpClient);
+            containerRegistry.RegisterSingleton<Shell>();
+        }
 
+        protected override async void OnInitialized()
+        {
+            //HttpClient = new HttpServiceClient(ConfigHelper.HttpServerUrl);
+            //bool isRunning = false;
 
-            AppServices.ErrorHandler.Execute(async () =>
+            //try
+            //{
+            //    isRunning = await HttpClient.PingServiceAsync();
+            //}
+            //catch (Exception ex)
+            //{
+            //    AppServices.AppLogger.Error("Ping failed", ex);
+            //    isRunning = false;
+            //}
+
+            //if (!isRunning)
+            //{
+            //    MessageBox.Show(
+            //        "Service not reachable. Cannot start application.",
+            //        "Startup Error",
+            //        MessageBoxButton.OK,
+            //        MessageBoxImage.Error);
+
+            //    Application.Current.Shutdown();
+            //    return;
+            //}
+
+            base.OnInitialized();
+
+            var pipe = new IpcNamedPipeClient();
+            bool isRunning = false;
+
+            try
             {
-                // Example: ping the service
-                bool isRunning = await HttpClient.PingServiceAsync();
+                // Check if the background Windows Service is reachable
+                isRunning = await pipe.PingAsync();
+            }
+            catch (Exception ex)
+            {
+                AppServices.AppLogger.Error("Pipe ping failed", ex);
+                isRunning = false;
+            }
 
-                if (isRunning)
-                    AppServices.AppLogger.Info("Service is running!");
-                else
-                    AppServices.AppLogger.Warn("Service is NOT reachable.");
+            if (!isRunning)
+            {
+                MessageBox.Show(
+                    "Background service not reachable. Cannot start application.",
+                    "Startup Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
 
-            }, AppServices.AppLogger, "OnStartup");
+                Application.Current.Shutdown();
+                return;
+            }
+
+            try
+            {
+                // Example: ask the service to start the sensor
+                await pipe.SendMessageAsync("StartSensor");
+            }
+            catch (Exception ex)
+            {
+                AppServices.AppLogger.Error("Failed to send StartSensor command via pipe", ex);
+
+                MessageBox.Show(
+                    "Unable to communicate with background service.",
+                    "Communication Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
+                Application.Current.Shutdown();
+                return;
+            }
         }
     }
-
 }

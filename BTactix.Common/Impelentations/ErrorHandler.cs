@@ -35,9 +35,17 @@ namespace BTactix.Common.Impelentations
             }
         }
 
-        public Task ExecuteAsync(Action action, ILog logger, string contextMessage = "")
+        public async Task ExecuteAsync(Func<Task> func, ILog logger, string context)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await func();
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"Error in {context}", ex);
+                throw;
+            }
         }
     }
 }

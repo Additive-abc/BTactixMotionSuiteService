@@ -8,6 +8,7 @@ namespace BTactixMotionSuiteService.Interfaces
 {
     public interface IDataExportService
     {
-
+        void Start();
+        void Stop();
     }
 }

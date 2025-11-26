@@ -6,21 +6,32 @@ namespace BTactixMotionSuiteService
 {
     public class CoreOrchestratorServiceWorker : BackgroundService
     {
-        private readonly ILog _logger;
+        private readonly ILog logger;
+        private readonly IIpcNamedPipeServer ipcNamedPipeServer;
 
-        public CoreOrchestratorServiceWorker(IAppLoggerFactory loggerFactory)
+        public CoreOrchestratorServiceWorker(IAppLoggerFactory loggerFactory, IIpcNamedPipeServer ipcNamedPipeServer)
         {
-            _logger = loggerFactory.CreateLogger(this.GetType());
+            logger = loggerFactory.CreateLogger(this.GetType());
+            this.ipcNamedPipeServer = ipcNamedPipeServer;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                //_logger.Info($"Worker running at: {DateTimeOffset.Now}");
+            //while (!stoppingToken.IsCancellationRequested)
+            //{
+            //    //_logger.Info($"Worker running at: {DateTimeOffset.Now}");
 
-                await Task.Delay(1000, stoppingToken);
-            }
+            //    await Task.Delay(1000, stoppingToken);
+            //}
+
+            ipcNamedPipeServer.StartServerAsync();
+
+            ipcNamedPipeServer.OnMessageReceived += (msg) =>
+            {
+                logger.Info($"Received from UI: {msg}");
+            };
+
+            return Task.CompletedTask;
         }
     }
 }
