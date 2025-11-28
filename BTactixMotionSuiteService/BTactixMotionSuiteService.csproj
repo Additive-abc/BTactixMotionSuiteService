@@ -9,11 +9,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="SampleData\leftcalibration_data.txt" />
+    <None Remove="SampleData\rightcalibration_data.txt" />
     <None Remove="Scripts\Install-Service.bat" />
     <None Remove="Scripts\Uninstall-Service.bat" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="SampleData\leftcalibration_data.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleData\rightcalibration_data.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Scripts\Install-Service.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -30,9 +38,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BTactix.Common\BTactix.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="SampleData\" />
   </ItemGroup>
 </Project>

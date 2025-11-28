@@ -1,0 +1,52 @@
+{
+  "gestures": [
+    {
+      "id": "pinch",
+      "hand": "left",
+      "fingerThresholds": {
+        "thumb": 0.7,
+        "index": 0.8
+      },
+      "minHoldMs": 50,
+      "hysteresis": 0.08
+    },
+    {
+      "id": "fist",
+      "hand": "both",
+      "fingerThresholds": {
+        "thumb": 0.7,
+        "index": 0.8,
+        "middle": 0.8,
+        "ring": 0.8,
+        "pinky": 0.8
+      },
+      "minHoldMs": 40,
+      "hysteresis": 0.08
+    },
+    {
+      "id": "point",
+      "hand": "left",
+      "fingerThresholds": {
+        "index": 0.2,
+        "middle": 0.8,
+        "ring": 0.8,
+        "pinky": 0.8
+      },
+      "minHoldMs": 30,
+      "hysteresis": 0.08
+    },
+    {
+      "id": "thumbs_up",
+      "hand": "left",
+      "fingerThresholds": {
+        "thumb": 0.8,
+        "index": 0.2,
+        "middle": 0.2,
+        "ring": 0.2,
+        "pinky": 0.2
+      },
+      "minHoldMs": 40,
+      "hysteresis": 0.08
+    }
+  ]
+}

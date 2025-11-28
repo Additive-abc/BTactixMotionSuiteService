@@ -26,6 +26,7 @@ public class Program
         builder.Services.AddSingleton<IEventBus, SimpleEventBus>();
         builder.Services.AddSingleton<IGestureEngine, GestureEngine>();
         builder.Services.AddSingleton<IIpcNamedPipeServer, IpcNamedPipeServer>();
+        builder.Services.AddSingleton<ICalibrationManager, CalibrationManager>();
         builder.Services.AddSingleton<IGloveFrameProducer, SampleDataProducer>();
         builder.Services.AddSingleton<IErrorHandler, ErrorHandler>();
         builder.Services.AddSingleton<IAppLoggerFactory>(_ => new AppLoggerFactory(logPath));
